@@ -1,0 +1,156 @@
+/* === Agroware Mombasa — Brand Overrides === */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+/* --- Variáveis de marca --- */
+:root {
+  --ag-verde:         #4A7C3F;
+  --ag-verde-escuro:  #2D5A27;
+  --ag-ambar:         #C8873A;
+  --ag-marrom-terra:  #8B5E3C;
+  --ag-bege:          #F5F3EF;
+  --ag-cinza-quente:  #E8E4DC;
+  --ag-texto:         #3D3530;
+  --ag-texto-sec:     #7A6F67;
+  --ag-sucesso:       #3B7A3B;
+  --ag-atencao:       #C8873A;
+  --ag-erro:          #A63228;
+}
+
+/* --- Tipografia --- */
+body {
+  font-family: 'Inter', 'Roboto', sans-serif;
+  color: var(--ag-texto);
+  background-color: var(--ag-bege);
+}
+
+/* --- Nav header (topo do sidebar) --- */
+.nav-header {
+  background-color: var(--ag-verde-escuro);
+}
+
+/* --- Sidebar --- */
+.quixnav {
+  background-color: var(--ag-verde-escuro);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Itens de menu: hover e ativo */
+.quixnav .metismenu > li:hover > a,
+.quixnav .metismenu > li:focus > a,
+.quixnav .metismenu > li.mm-active > a {
+  background-color: var(--ag-verde);
+  color: #fff;
+}
+
+/* Submenu aberto */
+.quixnav .metismenu > li.mm-active ul {
+  background-color: rgba(45, 90, 39, 0.3);
+}
+
+/* Rótulos de seção */
+.nav-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* --- Botão hambúrguer --- */
+.hamburger .line {
+  background: var(--ag-verde);
+}
+
+/* --- Header (barra superior) --- */
+.header {
+  background-color: #fff;
+  border-bottom: 1px solid var(--ag-cinza-quente);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* --- Cards --- */
+.card {
+  border-color: var(--ag-cinza-quente);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+  color: var(--ag-texto);
+}
+
+/* --- Botão primário --- */
+.btn-primary {
+  background-color: var(--ag-verde);
+  border-color: var(--ag-verde);
+}
+.btn-primary:hover {
+  background-color: var(--ag-verde-escuro);
+  border-color: var(--ag-verde-escuro);
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  box-shadow: 0 0 0 0.2rem rgba(74, 124, 63, 0.35);
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: var(--ag-verde);
+  border-color: var(--ag-verde);
+}
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--ag-verde-escuro);
+  border-color: var(--ag-verde-escuro);
+}
+
+/* --- Botão outline primário --- */
+.btn-outline-primary {
+  color: var(--ag-verde);
+  border-color: var(--ag-verde);
+}
+.btn-outline-primary:hover {
+  background-color: var(--ag-verde);
+  border-color: var(--ag-verde);
+  color: #fff;
+}
+
+/* --- Botões semânticos --- */
+.btn-success {
+  background-color: var(--ag-sucesso);
+  border-color: var(--ag-sucesso);
+}
+.btn-warning {
+  background-color: var(--ag-atencao);
+  border-color: var(--ag-atencao);
+  color: #fff;
+}
+.btn-danger {
+  background-color: var(--ag-erro);
+  border-color: var(--ag-erro);
+}
+
+/* --- Inputs --- */
+.form-control {
+  border-color: var(--ag-cinza-quente);
+  border-radius: 4px;
+  color: var(--ag-texto);
+}
+.form-control:focus {
+  border-color: var(--ag-verde);
+  box-shadow: 0 0 0 0.2rem rgba(74, 124, 63, 0.2);
+}
+
+/* --- Footer --- */
+.footer {
+  border-top: 1px solid var(--ag-cinza-quente);
+}
+.footer .copyright p {
+  color: var(--ag-texto-sec);
+}
+
+/* Tamanho das imagens de logo e título */
+.nav-header .logo-abbr {
+  max-width: 48px;
+}
+
+.nav-header .brand-title {
+  max-width: 100px;
+}
