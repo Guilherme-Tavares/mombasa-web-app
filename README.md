@@ -1,17 +1,23 @@
-# Agroware Mombasa — Web App
+# Agroware Mombasa
 
-Aplicação web monolítica para gestão de propriedades rurais dedicadas à pecuária de corte (fases de recria e engorda) em regime semi-intensivo.
+## Descrição
 
-Projeto acadêmico — disciplina de Programação Web II, IFRO Campus Ji-Paraná, 2026.1.
+Aplicação web monolítica para gestão de propriedades rurais dedicadas à pecuária de corte (fases de recria e engorda) em regime semi-intensivo. O nome referencia o capim-mombaça (*Panicum maximum* cv. Mombaça), forrageira amplamente utilizada nesses sistemas no Brasil.
 
----
+## Objetivo
+
+Fornecer aos produtores rurais uma ferramenta para controle de rebanho, divisões de pastagem, insumos (alimentação e medicamentos), temporadas produtivas e rastreabilidade dos animais.
+
+## Equipe
+
+Guilherme Tavares
 
 ## Stack
 
-- **NestJS 11** + Express
-- **EJS 5** + express-ejs-layouts
-- **TypeORM 0.3** + MySQL 8.0
-- **@nestjs/config** — variáveis de ambiente via `.env`
+- **NestJS 11** com Express
+- **EJS 5** com express-ejs-layouts
+- **TypeORM 0.3** com MySQL 8.0
+- **@nestjs/config** para variáveis de ambiente via `.env`
 
 ## Pré-requisitos
 
@@ -48,14 +54,18 @@ A aplicação sobe em `http://localhost:3000` por padrão.
 src/
 ├── config/database/   # DatabaseModule (TypeORM DataSource)
 ├── helpers/           # Helpers EJS (dateFormat, currencyFormat)
-└── modules/           # Módulos de domínio (a implementar)
+└── modules/           # Módulos de domínio
 
 views/
 ├── layouts/           # Layout mestre e partials
 └── home.ejs
 
 public/
-├── css/               # style.css (template) + agroware.css (brand)
+├── css/               # style.css (template) + agroware.css (identidade visual)
 ├── js/
 └── vendor/
 ```
+
+## Contexto acadêmico
+
+Projeto da disciplina de Programação Web II, IFRO Campus Ji-Paraná, 2026.1.
