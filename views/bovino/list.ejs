@@ -1,0 +1,80 @@
+<% const sexoLabels = { M: 'Macho', F: 'Fêmea' } %>
+<% const origemLabels = { comprado: 'Comprado', doacao: 'Doação' } %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Consulte todos os bovinos cadastrados</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Bovinos</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0" style="text-transform: none">Lista de Bovinos</h5>
+                <a href="/bovinos/criar" class="btn btn-primary btn-sm">
+                    <i class="icon icon-puzzle-10 mr-1"></i> Novo Bovino
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome</th>
+                                <th>Brinco</th>
+                                <th>Sexo</th>
+                                <th>Raça</th>
+                                <th>Peso (kg)</th>
+                                <th>Origem</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (bovinos.length === 0) { %>
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted">Nenhum bovino cadastrado.</td>
+                                </tr>
+                            <% } %>
+                            <% for (let i = 0; i < bovinos.length; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= bovinos[i].nome %></td>
+                                    <td><%= bovinos[i].brinco || '—' %></td>
+                                    <td><%= sexoLabels[bovinos[i].sexo] || bovinos[i].sexo %></td>
+                                    <td><%= bovinos[i].raca || '—' %></td>
+                                    <td><%= bovinos[i].pesoAtualKg != null ? bovinos[i].pesoAtualKg : '—' %></td>
+                                    <td><%= bovinos[i].origem ? origemLabels[bovinos[i].origem] || bovinos[i].origem : '—' %></td>
+                                    <td>
+                                        <span class="badge badge-<%= bovinos[i].ativo ? 'success' : 'secondary' %>">
+                                            <%= bovinos[i].ativo ? 'Ativo' : 'Inativo' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/bovinos/<%= bovinos[i].id %>/editar" class="text-warning mr-2">
+                                            <i class="fa fa-pencil fa-lg"></i>
+                                        </a>
+                                        <a href="/bovinos/<%= bovinos[i].id %>/excluir" class="text-danger">
+                                            <i class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

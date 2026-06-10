@@ -1,0 +1,91 @@
+<% const estoque = locals.estoque || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= estoque.id ? 'Atualize o registro de estoque' : 'Registre uma entrada de medicamento' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/estoques">Estoque</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/estoques/<%= estoque.id ? estoque.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="propriedadeId" class="form-label">Propriedade <span class="text-danger">*</span></label>
+                        <select class="form-control" id="propriedadeId" name="propriedadeId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const p of propriedades) { %>
+                                <option value="<%= p.id %>" <%= estoque.propriedade && estoque.propriedade.id === p.id ? 'selected' : '' %>><%= p.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="medicamentoId" class="form-label">Medicamento <span class="text-danger">*</span></label>
+                        <select class="form-control" id="medicamentoId" name="medicamentoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const m of medicamentos) { %>
+                                <option value="<%= m.id %>" <%= estoque.medicamento && estoque.medicamento.id === m.id ? 'selected' : '' %>><%= m.nomeComercial %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5 mb-3">
+                            <label for="quantidade" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantidade" name="quantidade"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= estoque.quantidade != null ? estoque.quantidade : '' %>" required>
+                        </div>
+
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="unidade" class="form-label">Unidade <span class="text-danger">*</span></label>
+                            <select class="form-control" id="unidade" name="unidade" required>
+                                <option value="">Selecione...</option>
+                                <option value="ml" <%= estoque.unidade === 'ml' ? 'selected' : '' %>>ml</option>
+                                <option value="l" <%= estoque.unidade === 'l' ? 'selected' : '' %>>L</option>
+                                <option value="g" <%= estoque.unidade === 'g' ? 'selected' : '' %>>g</option>
+                                <option value="kg" <%= estoque.unidade === 'kg' ? 'selected' : '' %>>kg</option>
+                                <option value="doses" <%= estoque.unidade === 'doses' ? 'selected' : '' %>>doses</option>
+                                <option value="frascos" <%= estoque.unidade === 'frascos' ? 'selected' : '' %>>frascos</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-3 mb-3">
+                            <label for="estoqueMinimo" class="form-label">Estoque Mín.</label>
+                            <input type="number" class="form-control" id="estoqueMinimo" name="estoqueMinimo"
+                                placeholder="0" step="0.01" min="0"
+                                value="<%= estoque.estoqueMinimo != null ? estoque.estoqueMinimo : '0' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="dataEntrada" class="form-label">Data de Entrada <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="dataEntrada" name="dataEntrada"
+                            value="<%= estoque.dataEntrada || locals.hoje || '' %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= estoque.id ? 'Salvar Alterações' : 'Registrar Entrada' %>
+                        </button>
+                        <a href="/estoques" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
