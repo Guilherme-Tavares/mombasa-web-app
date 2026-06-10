@@ -1,0 +1,95 @@
+<% const abastecimento = locals.abastecimento || {} %>
+<%
+  function fmtDtLocal(d) {
+    if (!d) return '';
+    const dt = new Date(d);
+    if (isNaN(dt.getTime())) return '';
+    const p = n => String(n).padStart(2, '0');
+    return dt.getFullYear() + '-' + p(dt.getMonth()+1) + '-' + p(dt.getDate()) + 'T' + p(dt.getHours()) + ':' + p(dt.getMinutes());
+  }
+%>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= abastecimento.id ? 'Atualize os dados do abastecimento' : 'Registre um abastecimento de cocho' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/abastecimentos">Abastecimentos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/abastecimentos/<%= abastecimento.id ? abastecimento.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="cochoId" class="form-label">Cocho <span class="text-danger">*</span></label>
+                        <select class="form-control" id="cochoId" name="cochoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const c of cochos) { %>
+                                <option value="<%= c.id %>" <%= abastecimento.cocho && abastecimento.cocho.id === c.id ? 'selected' : '' %>><%= c.identificacao || 'Cocho' %><%= c.divisao ? ' — ' + c.divisao.nome : '' %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="alimentoId" class="form-label">Alimento <span class="text-danger">*</span></label>
+                        <select class="form-control" id="alimentoId" name="alimentoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const a of alimentos) { %>
+                                <option value="<%= a.id %>" <%= abastecimento.alimento && abastecimento.alimento.id === a.id ? 'selected' : '' %>><%= a.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="dataAbastecimento" class="form-label">Data e Hora <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" id="dataAbastecimento" name="dataAbastecimento"
+                            value="<%= abastecimento.dataAbastecimento ? fmtDtLocal(abastecimento.dataAbastecimento) : (locals.agora || '') %>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5 mb-3">
+                            <label for="quantidadeInicialKg" class="form-label">Qtd Inicial (kg) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantidadeInicialKg" name="quantidadeInicialKg"
+                                placeholder="0.00" step="0.01" min="0.01"
+                                value="<%= abastecimento.quantidadeInicialKg != null ? abastecimento.quantidadeInicialKg : '' %>" required>
+                        </div>
+
+                        <div class="form-group col-md-5 mb-3">
+                            <label for="quantidadeRestanteKg" class="form-label">Qtd Restante (kg) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantidadeRestanteKg" name="quantidadeRestanteKg"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= abastecimento.quantidadeRestanteKg != null ? abastecimento.quantidadeRestanteKg : '' %>" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="esgotado" class="form-label">Esgotado? <span class="text-danger">*</span></label>
+                        <select class="form-control" id="esgotado" name="esgotado" required>
+                            <option value="0" <%= !abastecimento.esgotado ? 'selected' : '' %>>Não</option>
+                            <option value="1" <%= abastecimento.esgotado ? 'selected' : '' %>>Sim</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= abastecimento.id ? 'Salvar Alterações' : 'Registrar Abastecimento' %>
+                        </button>
+                        <a href="/abastecimentos" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

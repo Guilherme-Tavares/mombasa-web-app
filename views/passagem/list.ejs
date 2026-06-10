@@ -1,0 +1,73 @@
+<% const tipoLabels = { aguas: 'Águas', seca: 'Seca', transicao: 'Transição' } %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Acompanhe o desempenho de rebanhos por temporada</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Passagens</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0" style="text-transform: none">Lista de Passagens de Temporada</h5>
+                <a href="/passagens/criar" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus mr-1"></i> Nova Passagem
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Rebanho</th>
+                                <th>Temporada</th>
+                                <th>Tipo</th>
+                                <th>Peso Inicial (kg)</th>
+                                <th>Peso Final (kg)</th>
+                                <th>GMD (kg/dia)</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (passagens.length === 0) { %>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Nenhuma passagem de temporada cadastrada.</td>
+                                </tr>
+                            <% } %>
+                            <% for (let i = 0; i < passagens.length; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= passagens[i].rebanho ? passagens[i].rebanho.nome : '—' %></td>
+                                    <td><%= passagens[i].temporada ? passagens[i].temporada.nome : '—' %></td>
+                                    <td><%= passagens[i].temporada ? (tipoLabels[passagens[i].temporada.tipo] || passagens[i].temporada.tipo) : '—' %></td>
+                                    <td><%= passagens[i].pesoMedioInicialKg != null ? parseFloat(passagens[i].pesoMedioInicialKg).toFixed(2) : '—' %></td>
+                                    <td><%= passagens[i].pesoMedioFinalKg != null ? parseFloat(passagens[i].pesoMedioFinalKg).toFixed(2) : '—' %></td>
+                                    <td><%= passagens[i].gmdMedioKg != null ? parseFloat(passagens[i].gmdMedioKg).toFixed(3) : '—' %></td>
+                                    <td>
+                                        <a href="/passagens/<%= passagens[i].id %>/editar" class="text-warning mr-2">
+                                            <i class="fa fa-pencil fa-lg"></i>
+                                        </a>
+                                        <a href="/passagens/<%= passagens[i].id %>/excluir" class="text-danger">
+                                            <i class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

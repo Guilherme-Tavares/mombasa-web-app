@@ -1,0 +1,66 @@
+<% const pertencimento = locals.pertencimento || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Confirme a exclusão do pertencimento</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/pertencimentos">Pertencimentos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Excluir</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger p-3">
+                <h5 class="card-title text-white mb-0" style="text-transform: none">Excluir Pertencimento</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    Esta ação excluirá o pertencimento de forma permanente e não poderá ser desfeita.
+                </div>
+
+                <p class="mb-4">Tem certeza que deseja excluir o registro abaixo?</p>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <th width="35%">Bovino</th>
+                                <td><%= pertencimento.bovino ? pertencimento.bovino.nome : '—' %><%= pertencimento.bovino && pertencimento.bovino.brinco ? ' (' + pertencimento.bovino.brinco + ')' : '' %></td>
+                            </tr>
+                            <tr>
+                                <th>Rebanho</th>
+                                <td><%= pertencimento.rebanho ? pertencimento.rebanho.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Peso de Entrada</th>
+                                <td><%= pertencimento.pesoEntradaKg != null ? parseFloat(pertencimento.pesoEntradaKg).toFixed(2) + ' kg' : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Entrada</th>
+                                <td><%= pertencimento.dataEntrada ? pertencimento.dataEntrada.split('-').reverse().join('/') : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Saída</th>
+                                <td><%= pertencimento.dataSaida ? pertencimento.dataSaida.split('-').reverse().join('/') : '—' %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <form action="/pertencimentos/<%= pertencimento.id %>/excluir" method="POST">
+                    <button type="submit" class="btn btn-danger mr-2">Confirmar Exclusão</button>
+                    <a href="/pertencimentos" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+<% const passagem = locals.passagem || {} %>
+<% const tipoLabels = { aguas: 'Águas', seca: 'Seca', transicao: 'Transição' } %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Confirme a exclusão da passagem de temporada</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/passagens">Passagens</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Excluir</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger p-3">
+                <h5 class="card-title text-white mb-0" style="text-transform: none">Excluir Passagem de Temporada</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    Esta ação excluirá a passagem de forma permanente e não poderá ser desfeita.
+                </div>
+
+                <p class="mb-4">Tem certeza que deseja excluir o registro abaixo?</p>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <th width="35%">Rebanho</th>
+                                <td><%= passagem.rebanho ? passagem.rebanho.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Temporada</th>
+                                <td><%= passagem.temporada ? passagem.temporada.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Tipo</th>
+                                <td><%= passagem.temporada ? (tipoLabels[passagem.temporada.tipo] || passagem.temporada.tipo) : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Peso Médio Inicial</th>
+                                <td><%= passagem.pesoMedioInicialKg != null ? parseFloat(passagem.pesoMedioInicialKg).toFixed(2) + ' kg' : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Peso Médio Final</th>
+                                <td><%= passagem.pesoMedioFinalKg != null ? parseFloat(passagem.pesoMedioFinalKg).toFixed(2) + ' kg' : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>GMD Médio</th>
+                                <td><%= passagem.gmdMedioKg != null ? parseFloat(passagem.gmdMedioKg).toFixed(3) + ' kg/dia' : '—' %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <form action="/passagens/<%= passagem.id %>/excluir" method="POST">
+                    <button type="submit" class="btn btn-danger mr-2">Confirmar Exclusão</button>
+                    <a href="/passagens" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

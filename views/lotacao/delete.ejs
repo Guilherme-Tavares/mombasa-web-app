@@ -1,0 +1,70 @@
+<% const lotacao = locals.lotacao || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Confirme a exclusão da lotação</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/lotacoes">Lotações</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Excluir</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger p-3">
+                <h5 class="card-title text-white mb-0" style="text-transform: none">Excluir Lotação</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    Esta ação excluirá a lotação de forma permanente e não poderá ser desfeita.
+                </div>
+
+                <p class="mb-4">Tem certeza que deseja excluir o registro abaixo?</p>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <th width="35%">Rebanho</th>
+                                <td><%= lotacao.rebanho ? lotacao.rebanho.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Divisão</th>
+                                <td><%= lotacao.divisao ? lotacao.divisao.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Propriedade</th>
+                                <td><%= lotacao.divisao && lotacao.divisao.propriedade ? lotacao.divisao.propriedade.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>N° de Cabeças</th>
+                                <td><%= lotacao.numeroCabecas %></td>
+                            </tr>
+                            <tr>
+                                <th>Entrada</th>
+                                <td><%= lotacao.dataEntrada ? lotacao.dataEntrada.split('-').reverse().join('/') : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Saída</th>
+                                <td><%= lotacao.dataSaida ? lotacao.dataSaida.split('-').reverse().join('/') : '—' %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <form action="/lotacoes/<%= lotacao.id %>/excluir" method="POST">
+                    <button type="submit" class="btn btn-danger mr-2">Confirmar Exclusão</button>
+                    <a href="/lotacoes" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

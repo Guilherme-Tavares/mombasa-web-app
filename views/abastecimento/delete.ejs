@@ -1,0 +1,70 @@
+<% const abastecimento = locals.abastecimento || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Confirme a exclusão do abastecimento</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/abastecimentos">Abastecimentos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Excluir</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger p-3">
+                <h5 class="card-title text-white mb-0" style="text-transform: none">Excluir Abastecimento de Cocho</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    Esta ação excluirá o abastecimento de forma permanente e não poderá ser desfeita.
+                </div>
+
+                <p class="mb-4">Tem certeza que deseja excluir o registro abaixo?</p>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <th width="35%">Cocho</th>
+                                <td><%= abastecimento.cocho ? (abastecimento.cocho.identificacao || 'Cocho') : '—' %><%= abastecimento.cocho && abastecimento.cocho.divisao ? ' — ' + abastecimento.cocho.divisao.nome : '' %></td>
+                            </tr>
+                            <tr>
+                                <th>Alimento</th>
+                                <td><%= abastecimento.alimento ? abastecimento.alimento.nome : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Qtd Inicial</th>
+                                <td><%= abastecimento.quantidadeInicialKg != null ? parseFloat(abastecimento.quantidadeInicialKg).toFixed(2) + ' kg' : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Qtd Restante</th>
+                                <td><%= abastecimento.quantidadeRestanteKg != null ? parseFloat(abastecimento.quantidadeRestanteKg).toFixed(2) + ' kg' : '—' %></td>
+                            </tr>
+                            <tr>
+                                <th>Esgotado</th>
+                                <td><%= abastecimento.esgotado ? 'Sim' : 'Não' %></td>
+                            </tr>
+                            <tr>
+                                <th>Data</th>
+                                <td><%= abastecimento.dataAbastecimento ? new Date(abastecimento.dataAbastecimento).toLocaleString('pt-BR') : '—' %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <form action="/abastecimentos/<%= abastecimento.id %>/excluir" method="POST">
+                    <button type="submit" class="btn btn-danger mr-2">Confirmar Exclusão</button>
+                    <a href="/abastecimentos" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

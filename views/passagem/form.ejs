@@ -1,0 +1,81 @@
+<% const passagem = locals.passagem || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= passagem.id ? 'Atualize os dados da passagem' : 'Registre o desempenho de um rebanho em uma temporada' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/passagens">Passagens</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/passagens/<%= passagem.id ? passagem.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="rebanhoId" class="form-label">Rebanho <span class="text-danger">*</span></label>
+                        <select class="form-control" id="rebanhoId" name="rebanhoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const r of rebanhos) { %>
+                                <option value="<%= r.id %>" <%= passagem.rebanho && passagem.rebanho.id === r.id ? 'selected' : '' %>><%= r.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="temporadaId" class="form-label">Temporada <span class="text-danger">*</span></label>
+                        <select class="form-control" id="temporadaId" name="temporadaId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const t of temporadas) { %>
+                                <option value="<%= t.id %>" <%= passagem.temporada && passagem.temporada.id === t.id ? 'selected' : '' %>><%= t.nome %> (<%= t.dataInicio ? t.dataInicio.split('-').reverse().join('/') : '' %> – <%= t.dataFim ? t.dataFim.split('-').reverse().join('/') : '' %>)</option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <p class="text-muted small mb-2">Dados de desempenho (opcionais)</p>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="pesoMedioInicialKg" class="form-label">Peso Médio Inicial (kg)</label>
+                            <input type="number" class="form-control" id="pesoMedioInicialKg" name="pesoMedioInicialKg"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= passagem.pesoMedioInicialKg != null ? passagem.pesoMedioInicialKg : '' %>">
+                        </div>
+
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="pesoMedioFinalKg" class="form-label">Peso Médio Final (kg)</label>
+                            <input type="number" class="form-control" id="pesoMedioFinalKg" name="pesoMedioFinalKg"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= passagem.pesoMedioFinalKg != null ? passagem.pesoMedioFinalKg : '' %>">
+                        </div>
+
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="gmdMedioKg" class="form-label">GMD Médio (kg/dia)</label>
+                            <input type="number" class="form-control" id="gmdMedioKg" name="gmdMedioKg"
+                                placeholder="0.000" step="0.001" min="0"
+                                value="<%= passagem.gmdMedioKg != null ? passagem.gmdMedioKg : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= passagem.id ? 'Salvar Alterações' : 'Registrar Passagem' %>
+                        </button>
+                        <a href="/passagens" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

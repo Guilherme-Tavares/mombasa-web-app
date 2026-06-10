@@ -1,0 +1,90 @@
+<% const aplicacao = locals.aplicacao || {} %>
+<%
+  function fmtDtLocal(d) {
+    if (!d) return '';
+    const dt = new Date(d);
+    if (isNaN(dt.getTime())) return '';
+    const p = n => String(n).padStart(2, '0');
+    return dt.getFullYear() + '-' + p(dt.getMonth()+1) + '-' + p(dt.getDate()) + 'T' + p(dt.getHours()) + ':' + p(dt.getMinutes());
+  }
+%>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= aplicacao.id ? 'Atualize os dados da aplicação' : 'Registre uma aplicação de medicamento' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/aplicacoes">Aplicações</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/aplicacoes/<%= aplicacao.id ? aplicacao.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="bovinoId" class="form-label">Bovino <span class="text-danger">*</span></label>
+                        <select class="form-control" id="bovinoId" name="bovinoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const b of bovinos) { %>
+                                <option value="<%= b.id %>" <%= aplicacao.bovino && aplicacao.bovino.id === b.id ? 'selected' : '' %>><%= b.nome %><%= b.brinco ? ' (' + b.brinco + ')' : '' %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="medicamentoId" class="form-label">Medicamento <span class="text-danger">*</span></label>
+                        <select class="form-control" id="medicamentoId" name="medicamentoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const m of medicamentos) { %>
+                                <option value="<%= m.id %>" <%= aplicacao.medicamento && aplicacao.medicamento.id === m.id ? 'selected' : '' %>><%= m.nomeComercial %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="dataAplicacao" class="form-label">Data e Hora da Aplicação <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" id="dataAplicacao" name="dataAplicacao"
+                            value="<%= aplicacao.dataAplicacao ? fmtDtLocal(aplicacao.dataAplicacao) : (locals.agora || '') %>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5 mb-4">
+                            <label for="dose" class="form-label">Dose <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="dose" name="dose"
+                                placeholder="0.00" step="0.01" min="0.01"
+                                value="<%= aplicacao.dose != null ? aplicacao.dose : '' %>" required>
+                        </div>
+
+                        <div class="form-group col-md-4 mb-4">
+                            <label for="unidadeDose" class="form-label">Unidade <span class="text-danger">*</span></label>
+                            <select class="form-control" id="unidadeDose" name="unidadeDose" required>
+                                <option value="">Selecione...</option>
+                                <option value="ml" <%= aplicacao.unidadeDose === 'ml' ? 'selected' : '' %>>ml</option>
+                                <option value="g" <%= aplicacao.unidadeDose === 'g' ? 'selected' : '' %>>g</option>
+                                <option value="doses" <%= aplicacao.unidadeDose === 'doses' ? 'selected' : '' %>>doses</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= aplicacao.id ? 'Salvar Alterações' : 'Registrar Aplicação' %>
+                        </button>
+                        <a href="/aplicacoes" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

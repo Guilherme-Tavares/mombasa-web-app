@@ -1,0 +1,82 @@
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Registre abastecimentos de cochos com alimentos</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Abastecimentos</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0" style="text-transform: none">Lista de Abastecimentos</h5>
+                <a href="/abastecimentos/criar" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus mr-1"></i> Novo Abastecimento
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cocho</th>
+                                <th>Alimento</th>
+                                <th>Qtd Inicial (kg)</th>
+                                <th>Qtd Restante (kg)</th>
+                                <th>Esgotado</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (abastecimentos.length === 0) { %>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Nenhum abastecimento cadastrado.</td>
+                                </tr>
+                            <% } %>
+                            <% for (let i = 0; i < abastecimentos.length; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td>
+                                        <%= abastecimentos[i].cocho ? (abastecimentos[i].cocho.identificacao || 'Cocho') : '—' %>
+                                        <% if (abastecimentos[i].cocho && abastecimentos[i].cocho.divisao) { %>
+                                            <small class="text-muted">— <%= abastecimentos[i].cocho.divisao.nome %></small>
+                                        <% } %>
+                                    </td>
+                                    <td><%= abastecimentos[i].alimento ? abastecimentos[i].alimento.nome : '—' %></td>
+                                    <td><%= abastecimentos[i].quantidadeInicialKg != null ? parseFloat(abastecimentos[i].quantidadeInicialKg).toFixed(2) : '—' %></td>
+                                    <td><%= abastecimentos[i].quantidadeRestanteKg != null ? parseFloat(abastecimentos[i].quantidadeRestanteKg).toFixed(2) : '—' %></td>
+                                    <td>
+                                        <% if (abastecimentos[i].esgotado) { %>
+                                            <span class="badge badge-danger">Sim</span>
+                                        <% } else { %>
+                                            <span class="badge badge-success">Não</span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= abastecimentos[i].dataAbastecimento ? new Date(abastecimentos[i].dataAbastecimento).toLocaleString('pt-BR') : '—' %></td>
+                                    <td>
+                                        <a href="/abastecimentos/<%= abastecimentos[i].id %>/editar" class="text-warning mr-2">
+                                            <i class="fa fa-pencil fa-lg"></i>
+                                        </a>
+                                        <a href="/abastecimentos/<%= abastecimentos[i].id %>/excluir" class="text-danger">
+                                            <i class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

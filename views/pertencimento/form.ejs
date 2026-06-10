@@ -1,0 +1,79 @@
+<% const pertencimento = locals.pertencimento || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= pertencimento.id ? 'Atualize o vínculo' : 'Registre um bovino em um rebanho' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/pertencimentos">Pertencimentos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/pertencimentos/<%= pertencimento.id ? pertencimento.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="bovinoId" class="form-label">Bovino <span class="text-danger">*</span></label>
+                        <select class="form-control" id="bovinoId" name="bovinoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const b of bovinos) { %>
+                                <option value="<%= b.id %>" <%= pertencimento.bovino && pertencimento.bovino.id === b.id ? 'selected' : '' %>><%= b.nome %><%= b.brinco ? ' (' + b.brinco + ')' : '' %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="rebanhoId" class="form-label">Rebanho <span class="text-danger">*</span></label>
+                        <select class="form-control" id="rebanhoId" name="rebanhoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const r of rebanhos) { %>
+                                <option value="<%= r.id %>" <%= pertencimento.rebanho && pertencimento.rebanho.id === r.id ? 'selected' : '' %>><%= r.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5 mb-3">
+                            <label for="dataEntrada" class="form-label">Data de Entrada <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="dataEntrada" name="dataEntrada"
+                                value="<%= pertencimento.dataEntrada || locals.hoje || '' %>" required>
+                        </div>
+
+                        <div class="form-group col-md-5 mb-3">
+                            <label for="dataSaida" class="form-label">Data de Saída</label>
+                            <input type="date" class="form-control" id="dataSaida" name="dataSaida"
+                                value="<%= pertencimento.dataSaida || '' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-4">
+                            <label for="pesoEntradaKg" class="form-label">Peso de Entrada (kg)</label>
+                            <input type="number" class="form-control" id="pesoEntradaKg" name="pesoEntradaKg"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= pertencimento.pesoEntradaKg != null ? pertencimento.pesoEntradaKg : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= pertencimento.id ? 'Salvar Alterações' : 'Registrar Pertencimento' %>
+                        </button>
+                        <a href="/pertencimentos" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
