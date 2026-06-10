@@ -1,0 +1,62 @@
+<% const medicamento = locals.medicamento || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= medicamento.id ? 'Atualize os dados do medicamento' : 'Preencha os dados do novo medicamento' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/medicamentos">Medicamentos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/medicamentos/<%= medicamento.id ? medicamento.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="nomeComercial" class="form-label">Nome Comercial <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nomeComercial" name="nomeComercial"
+                            placeholder="Ex.: Ivomec, Dectomax"
+                            value="<%= medicamento.nomeComercial || '' %>" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="principioAtivo" class="form-label">Princípio Ativo</label>
+                        <input type="text" class="form-control" id="principioAtivo" name="principioAtivo"
+                            placeholder="Ex.: Ivermectina"
+                            value="<%= medicamento.principioAtivo || '' %>">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
+                        <select class="form-control" id="tipo" name="tipo" required>
+                            <option value="">Selecione...</option>
+                            <option value="antibiotico" <%= medicamento.tipo === 'antibiotico' ? 'selected' : '' %>>Antibiótico</option>
+                            <option value="antiparasitario" <%= medicamento.tipo === 'antiparasitario' ? 'selected' : '' %>>Antiparasitário</option>
+                            <option value="vitamina" <%= medicamento.tipo === 'vitamina' ? 'selected' : '' %>>Vitamina</option>
+                            <option value="vacina" <%= medicamento.tipo === 'vacina' ? 'selected' : '' %>>Vacina</option>
+                            <option value="outro" <%= medicamento.tipo === 'outro' ? 'selected' : '' %>>Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= medicamento.id ? 'Salvar Alterações' : 'Cadastrar Medicamento' %>
+                        </button>
+                        <a href="/medicamentos" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

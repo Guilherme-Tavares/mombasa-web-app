@@ -18,7 +18,7 @@ export const databaseProviders = [
         port: Number(configService.get<string>('DB_PORT', '3306')),
         username: configService.get<string>('DB_USERNAME', 'root'),
         password: configService.get<string>('DB_PASSWORD', ''),
-        database: configService.get<string>('DB_NAME', 'agroware_mombasa'),
+        database: configService.get<string>('DB_NAME', 'agroware_mombasa_legacy'),
         entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
         synchronize: toBoolean(
           configService.get<string>('DB_SYNCHRONIZE', 'false'),
