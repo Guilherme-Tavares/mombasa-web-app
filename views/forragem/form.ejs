@@ -1,0 +1,71 @@
+<% const forragem = locals.forragem || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= forragem.id ? 'Atualize os dados da forragem' : 'Preencha os dados da nova forragem' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/forragens">Forragens</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/forragens/<%= forragem.id ? forragem.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="divisaoId" class="form-label">Divisão <span class="text-danger">*</span></label>
+                        <select class="form-control" id="divisaoId" name="divisaoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const d of divisoes) { %>
+                                <option value="<%= d.id %>" <%= forragem.divisao && forragem.divisao.id === d.id ? 'selected' : '' %>>
+                                    <%= d.nome %><%= d.propriedade ? ' (' + d.propriedade.nome + ')' : '' %>
+                                </option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="tipo" class="form-label">Tipo de Forragem <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="tipo" name="tipo"
+                            placeholder="Ex.: Mombaça, Brachiaria, Tifton"
+                            value="<%= forragem.tipo || '' %>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="dataPlantio" class="form-label">Data de Plantio</label>
+                            <input type="date" class="form-control" id="dataPlantio" name="dataPlantio"
+                                value="<%= forragem.dataPlantio || '' %>">
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="ativa" class="form-label">Status</label>
+                            <select class="form-control" id="ativa" name="ativa">
+                                <option value="1" <%= !forragem.id || forragem.ativa ? 'selected' : '' %>>Ativa</option>
+                                <option value="0" <%= forragem.id && !forragem.ativa ? 'selected' : '' %>>Inativa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= forragem.id ? 'Salvar Alterações' : 'Cadastrar Forragem' %>
+                        </button>
+                        <a href="/forragens" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

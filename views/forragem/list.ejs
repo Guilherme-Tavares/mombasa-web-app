@@ -1,0 +1,73 @@
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; Consulte todas as forragens cadastradas</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Forragens</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0" style="text-transform: none">Lista de Forragens</h5>
+                <a href="/forragens/criar" class="btn btn-primary btn-sm">
+                    <i class="icon icon-layers-3 mr-1"></i> Nova Forragem
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tipo</th>
+                                <th>Divisão</th>
+                                <th>Propriedade</th>
+                                <th>Data Plantio</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (forragens.length === 0) { %>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">Nenhuma forragem cadastrada.</td>
+                                </tr>
+                            <% } %>
+                            <% for (let i = 0; i < forragens.length; i++) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= forragens[i].tipo %></td>
+                                    <td><%= forragens[i].divisao ? forragens[i].divisao.nome : '—' %></td>
+                                    <td><%= forragens[i].divisao && forragens[i].divisao.propriedade ? forragens[i].divisao.propriedade.nome : '—' %></td>
+                                    <td><%= forragens[i].dataPlantio ? forragens[i].dataPlantio.split('-').reverse().join('/') : '—' %></td>
+                                    <td>
+                                        <span class="badge badge-<%= forragens[i].ativa ? 'success' : 'secondary' %>">
+                                            <%= forragens[i].ativa ? 'Ativa' : 'Inativa' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/forragens/<%= forragens[i].id %>/editar" class="text-warning mr-2">
+                                            <i class="fa fa-pencil fa-lg"></i>
+                                        </a>
+                                        <a href="/forragens/<%= forragens[i].id %>/excluir" class="text-danger">
+                                            <i class="fa fa-trash fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

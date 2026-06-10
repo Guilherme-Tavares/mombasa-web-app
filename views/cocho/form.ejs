@@ -1,0 +1,85 @@
+<% const cocho = locals.cocho || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= cocho.id ? 'Atualize os dados do cocho' : 'Preencha os dados do novo cocho' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/cochos">Cochos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/cochos/<%= cocho.id ? cocho.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="divisaoId" class="form-label">Divisão <span class="text-danger">*</span></label>
+                        <select class="form-control" id="divisaoId" name="divisaoId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const d of divisoes) { %>
+                                <option value="<%= d.id %>" <%= cocho.divisao && cocho.divisao.id === d.id ? 'selected' : '' %>>
+                                    <%= d.nome %><%= d.propriedade ? ' (' + d.propriedade.nome + ')' : '' %>
+                                </option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="identificacao" class="form-label">Identificação</label>
+                            <input type="text" class="form-control" id="identificacao" name="identificacao"
+                                placeholder="Ex.: C-01, Cocho Sul"
+                                value="<%= cocho.identificacao || '' %>">
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="tipoMaterial" class="form-label">Material</label>
+                            <select class="form-control" id="tipoMaterial" name="tipoMaterial">
+                                <option value="">—</option>
+                                <option value="madeira" <%= cocho.tipoMaterial === 'madeira' ? 'selected' : '' %>>Madeira</option>
+                                <option value="concreto" <%= cocho.tipoMaterial === 'concreto' ? 'selected' : '' %>>Concreto</option>
+                                <option value="plastico" <%= cocho.tipoMaterial === 'plastico' ? 'selected' : '' %>>Plástico</option>
+                                <option value="metal" <%= cocho.tipoMaterial === 'metal' ? 'selected' : '' %>>Metal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="capacidadeKg" class="form-label">Capacidade (kg) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="capacidadeKg" name="capacidadeKg"
+                                placeholder="0.00" step="0.01" min="0.01"
+                                value="<%= cocho.capacidadeKg != null ? cocho.capacidadeKg : '' %>" required>
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="ativo" class="form-label">Status</label>
+                            <select class="form-control" id="ativo" name="ativo">
+                                <option value="1" <%= !cocho.id || cocho.ativo ? 'selected' : '' %>>Ativo</option>
+                                <option value="0" <%= cocho.id && !cocho.ativo ? 'selected' : '' %>>Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= cocho.id ? 'Salvar Alterações' : 'Cadastrar Cocho' %>
+                        </button>
+                        <a href="/cochos" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

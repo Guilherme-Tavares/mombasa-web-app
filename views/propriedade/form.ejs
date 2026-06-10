@@ -1,0 +1,90 @@
+<% const propriedade = locals.propriedade || {} %>
+<% const ufs = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'] %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= propriedade.id ? 'Atualize os dados da propriedade' : 'Preencha os dados da nova propriedade' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/propriedades">Propriedades</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <form action="/propriedades/<%= propriedade.id ? propriedade.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="produtorId" class="form-label">Produtor <span class="text-danger">*</span></label>
+                        <select class="form-control" id="produtorId" name="produtorId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const p of produtores) { %>
+                                <option value="<%= p.id %>" <%= propriedade.produtor && propriedade.produtor.id === p.id ? 'selected' : '' %>><%= p.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nome" name="nome"
+                            placeholder="Ex.: Fazenda São João"
+                            value="<%= propriedade.nome || '' %>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8 mb-3">
+                            <label for="municipio" class="form-label">Município</label>
+                            <input type="text" class="form-control" id="municipio" name="municipio"
+                                placeholder="Ex.: Ji-Paraná"
+                                value="<%= propriedade.municipio || '' %>">
+                        </div>
+
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="estado" class="form-label">Estado (UF)</label>
+                            <select class="form-control" id="estado" name="estado">
+                                <option value="">—</option>
+                                <% for (const uf of ufs) { %>
+                                    <option value="<%= uf %>" <%= propriedade.estado === uf ? 'selected' : '' %>><%= uf %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="areaTotalHectares" class="form-label">Área Total (ha)</label>
+                            <input type="number" class="form-control" id="areaTotalHectares" name="areaTotalHectares"
+                                placeholder="0.00" step="0.01" min="0"
+                                value="<%= propriedade.areaTotalHectares != null ? propriedade.areaTotalHectares : '' %>">
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="ativa" class="form-label">Status</label>
+                            <select class="form-control" id="ativa" name="ativa">
+                                <option value="1" <%= !propriedade.id || propriedade.ativa ? 'selected' : '' %>>Ativa</option>
+                                <option value="0" <%= propriedade.id && !propriedade.ativa ? 'selected' : '' %>>Inativa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= propriedade.id ? 'Salvar Alterações' : 'Cadastrar Propriedade' %>
+                        </button>
+                        <a href="/propriedades" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

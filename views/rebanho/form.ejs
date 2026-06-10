@@ -1,0 +1,79 @@
+<% const rebanho = locals.rebanho || {} %>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4 style="text-transform: none"><%= titulo %></h4>
+            <p class="mb-0">&raquo; <%= rebanho.id ? 'Atualize os dados do rebanho' : 'Preencha os dados do novo rebanho' %></p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Início</a></li>
+            <li class="breadcrumb-item"><a href="/rebanhos">Rebanhos</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)"><%= titulo %></a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/rebanhos/<%= rebanho.id ? rebanho.id + '/editar' : 'criar' %>" method="POST">
+
+                    <div class="form-group mb-3">
+                        <label for="propriedadeId" class="form-label">Propriedade <span class="text-danger">*</span></label>
+                        <select class="form-control" id="propriedadeId" name="propriedadeId" required>
+                            <option value="">Selecione...</option>
+                            <% for (const p of propriedades) { %>
+                                <option value="<%= p.id %>" <%= rebanho.propriedade && rebanho.propriedade.id === p.id ? 'selected' : '' %>><%= p.nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nome" name="nome"
+                            placeholder="Ex.: Lote Engorda 2026"
+                            value="<%= rebanho.nome || '' %>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="finalidade" class="form-label">Finalidade <span class="text-danger">*</span></label>
+                            <select class="form-control" id="finalidade" name="finalidade" required>
+                                <option value="">Selecione...</option>
+                                <option value="recria" <%= rebanho.finalidade === 'recria' ? 'selected' : '' %>>Recria</option>
+                                <option value="engorda" <%= rebanho.finalidade === 'engorda' ? 'selected' : '' %>>Engorda</option>
+                                <option value="misto" <%= rebanho.finalidade === 'misto' ? 'selected' : '' %>>Misto</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="dataFormacao" class="form-label">Data de Formação <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="dataFormacao" name="dataFormacao"
+                                value="<%= rebanho.dataFormacao || '' %>" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="ativo" class="form-label">Status</label>
+                        <select class="form-control" id="ativo" name="ativo">
+                            <option value="1" <%= !rebanho.id || rebanho.ativo ? 'selected' : '' %>>Ativo</option>
+                            <option value="0" <%= rebanho.id && !rebanho.ativo ? 'selected' : '' %>>Inativo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <%= rebanho.id ? 'Salvar Alterações' : 'Cadastrar Rebanho' %>
+                        </button>
+                        <a href="/rebanhos" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
