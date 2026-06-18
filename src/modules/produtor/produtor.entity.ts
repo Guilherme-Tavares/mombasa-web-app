@@ -21,7 +21,7 @@ export class Produtor extends BaseEntity {
   @Column({ type: 'varchar', length: 20, nullable: true, default: null })
   telefone: string | null;
 
-  @Column({ type: 'varchar', length: 60, nullable: true, default: null })
+  @Column({ type: 'varchar', length: 256, nullable: true, default: null })
   senha: string | null;
 
   @CreateDateColumn({ name: 'data_cadastro' })

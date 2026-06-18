@@ -2,8 +2,8 @@ import { randomUUID } from 'crypto';
 import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
 export enum BovinoSexo {
-  M = 'M',
-  F = 'F',
+  M = 'm',
+  F = 'f',
 }
 
 export enum BovinoOrigem {
