@@ -372,8 +372,9 @@ DELETE FROM produtor;
 -- ============================================
 -- PRODUTOR (1)
 -- ============================================
+-- senha de demonstração: admin.mombasa2026 (hash ASP.NET Identity PasswordHasher V3)
 INSERT INTO produtor (id_produtor, nome, email, telefone, senha) VALUES
-('10000000-0000-4000-8000-000000000001', 'Guilherme Maricato Tavares', 'guilhermemaricatotavares@gmail.com', '(69) 99999-0001', NULL);
+('10000000-0000-4000-8000-000000000001', 'Admin', 'admin@mombasa.com', '(69) 99999-0001', 'AQAAAAIAAYagAAAAEIhZaOWY1rAKSbY0CxAlvPc5wEK11GXfWlQcZpKjOyFDJEbu7NPk0qeN0jVk1lRWsA==');
 
 -- ============================================
 -- PROPRIEDADE (1)
