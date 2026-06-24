@@ -58,6 +58,11 @@ body {
   background: var(--ag-verde);
 }
 
+/* Seta do menu quando retraído: sobrescreve o azul (!important) do template */
+[data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .nav-header .nav-control .hamburger .line {
+  background-color: var(--ag-verde) !important;
+}
+
 /* --- Header (barra superior) --- */
 .header {
   background-color: #fff;
