@@ -28,7 +28,8 @@ export class AuthController {
     );
 
     if (!produtor) {
-      res.render('auth/login', {
+      // status explícito: com @Res() num @Post, o padrão herdaria 201 (Created).
+      res.status(200).render('auth/login', {
         layout: false,
         erro: 'E-mail ou senha inválidos.',
         email: body.email ?? '',
