@@ -40,11 +40,11 @@ cp .env.example .env
 
 A aplicação roda com `DB_SYNCHRONIZE=false`, ou seja, **não cria as tabelas automaticamente**. Antes de executar, rode os dois scripts SQL abaixo no MySQL, nesta ordem:
 
-1. **DDL** — cria o banco `agroware_mombasa_legacy` e as 16 tabelas (com PKs UUID, enums, FKs e constraints).
-2. **DML** — popula as tabelas com dados de exemplo (1 produtor, 1 propriedade *Sítio Santa Fé*, 6 divisões, 4 rebanhos, 20 bovinos, etc.). É re-executável: limpa os dados antes de inserir.
+1. **DDL** - cria o banco `agroware_mombasa_legacy` e as 16 tabelas (com PKs UUID, enums, FKs e constraints).
+2. **DML** - popula as tabelas com dados de exemplo (1 produtor, 1 propriedade *Sítio Santa Fé*, 6 divisões, 4 rebanhos, 20 bovinos, etc.). É re-executável: limpa os dados antes de inserir.
 
 <details>
-<summary><strong>Script DDL — estrutura do banco</strong></summary>
+<summary><strong>Script DDL - estrutura do banco</strong></summary>
 
 ```sql
 CREATE DATABASE agroware_mombasa_legacy;
@@ -340,7 +340,7 @@ CREATE TABLE abastecimento_cocho
 </details>
 
 <details>
-<summary><strong>Script DML — dados de exemplo</strong></summary>
+<summary><strong>Script DML - dados de exemplo</strong></summary>
 
 ```sql
 USE agroware_mombasa_legacy;
