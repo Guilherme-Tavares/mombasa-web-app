@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Not } from 'typeorm';
+import { ValidationException } from '../../shared/validation.exception';
 import { Bovino } from './bovino.entity';
 
 @Injectable()
@@ -12,6 +14,7 @@ export class BovinoService {
   }
 
   async create(dados: any): Promise<Bovino> {
+    await this.validarBrincoUnico(dados.brinco, null);
     const bovino = Bovino.create({
       brinco: dados.brinco || null,
       nome: dados.nome,
@@ -29,6 +32,7 @@ export class BovinoService {
   async update(id: string, dados: any): Promise<Bovino | null> {
     const bovino = await this.findOne(id);
     if (!bovino) return null;
+    await this.validarBrincoUnico(dados.brinco, id);
     Object.assign(bovino, {
       brinco: dados.brinco || null,
       nome: dados.nome,
@@ -47,5 +51,19 @@ export class BovinoService {
     const bovino = await this.findOne(id);
     if (!bovino) return null;
     return bovino.remove();
+  }
+
+  // Brinco é opcional, mas deve ser único quando informado.
+  private async validarBrincoUnico(
+    brinco: string | null | undefined,
+    excludeId: string | null,
+  ): Promise<void> {
+    if (!brinco) return;
+    const emUso = await Bovino.findOneBy(
+      excludeId ? { brinco, id: Not(excludeId) } : { brinco },
+    );
+    if (emUso) {
+      throw new ValidationException(`O brinco "${brinco}" já está em uso.`);
+    }
   }
 }

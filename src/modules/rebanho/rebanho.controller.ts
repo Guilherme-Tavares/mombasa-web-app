@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { RebanhoService } from './rebanho.service';
 
 @Controller('rebanhos')
@@ -20,9 +22,19 @@ export class RebanhoController {
   }
 
   @Post('criar')
-  @Redirect('/rebanhos')
-  async store(@Body() dados: any): Promise<void> {
-    await this.rebanhoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.rebanhoService.create(dados);
+      res.redirect('/rebanhos');
+    } catch (e) {
+      const propriedades = await this.rebanhoService.findAllPropriedades();
+      res.status(422).render('rebanho/form', {
+        titulo: 'Novo Rebanho',
+        propriedades,
+        rebanho: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -36,9 +48,23 @@ export class RebanhoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/rebanhos')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.rebanhoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.rebanhoService.update(id, dados);
+      res.redirect('/rebanhos');
+    } catch (e) {
+      const propriedades = await this.rebanhoService.findAllPropriedades();
+      res.status(422).render('rebanho/form', {
+        titulo: 'Editar Rebanho',
+        propriedades,
+        rebanho: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -49,8 +75,25 @@ export class RebanhoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/rebanhos')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.rebanhoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.rebanhoService.remove(id);
+      res.redirect('/rebanhos');
+    } catch (e) {
+      const rebanhos = await this.rebanhoService.findAll();
+      res.status(422).render('rebanho/list', {
+        titulo: 'Rebanhos',
+        rebanhos,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      propriedade: { id: dados.propriedadeId },
+      ativo: dados.ativo === '1',
+    };
   }
 }

@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { AplicacaoMedicamentoService } from './aplicacao-medicamento.service';
 
 @Controller('aplicacoes')
@@ -24,9 +26,23 @@ export class AplicacaoMedicamentoController {
   }
 
   @Post('criar')
-  @Redirect('/aplicacoes')
-  async criarPost(@Body() body: any) {
-    await this.aplicacaoService.create(body);
+  async criarPost(@Body() body: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.aplicacaoService.create(body);
+      res.redirect('/aplicacoes');
+    } catch (e) {
+      const [bovinos, medicamentos] = await Promise.all([
+        this.aplicacaoService.findAllBovinos(),
+        this.aplicacaoService.findAllMedicamentos(),
+      ]);
+      res.status(422).render('aplicacao/form', {
+        titulo: 'Nova Aplicação',
+        bovinos,
+        medicamentos,
+        aplicacao: this.formValues(body),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -41,9 +57,27 @@ export class AplicacaoMedicamentoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/aplicacoes')
-  async editarPost(@Param('id') id: string, @Body() body: any) {
-    await this.aplicacaoService.update(id, body);
+  async editarPost(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.aplicacaoService.update(id, body);
+      res.redirect('/aplicacoes');
+    } catch (e) {
+      const [bovinos, medicamentos] = await Promise.all([
+        this.aplicacaoService.findAllBovinos(),
+        this.aplicacaoService.findAllMedicamentos(),
+      ]);
+      res.status(422).render('aplicacao/form', {
+        titulo: 'Editar Aplicação',
+        bovinos,
+        medicamentos,
+        aplicacao: { ...this.formValues(body), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -54,8 +88,25 @@ export class AplicacaoMedicamentoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/aplicacoes')
-  async excluirPost(@Param('id') id: string) {
-    await this.aplicacaoService.remove(id);
+  async excluirPost(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.aplicacaoService.remove(id);
+      res.redirect('/aplicacoes');
+    } catch (e) {
+      const aplicacoes = await this.aplicacaoService.findAll();
+      res.status(422).render('aplicacao/list', {
+        titulo: 'Aplicações de Medicamento',
+        aplicacoes,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(body: any): object {
+    return {
+      ...body,
+      bovino: { id: body.bovinoId },
+      medicamento: { id: body.medicamentoId },
+    };
   }
 }

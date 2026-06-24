@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { CochoService } from './cocho.service';
 
 @Controller('cochos')
@@ -20,9 +22,19 @@ export class CochoController {
   }
 
   @Post('criar')
-  @Redirect('/cochos')
-  async store(@Body() dados: any): Promise<void> {
-    await this.cochoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.cochoService.create(dados);
+      res.redirect('/cochos');
+    } catch (e) {
+      const divisoes = await this.cochoService.findAllDivisoes();
+      res.status(422).render('cocho/form', {
+        titulo: 'Novo Cocho',
+        divisoes,
+        cocho: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -36,9 +48,23 @@ export class CochoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/cochos')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.cochoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.cochoService.update(id, dados);
+      res.redirect('/cochos');
+    } catch (e) {
+      const divisoes = await this.cochoService.findAllDivisoes();
+      res.status(422).render('cocho/form', {
+        titulo: 'Editar Cocho',
+        divisoes,
+        cocho: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -49,8 +75,25 @@ export class CochoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/cochos')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.cochoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.cochoService.remove(id);
+      res.redirect('/cochos');
+    } catch (e) {
+      const cochos = await this.cochoService.findAll();
+      res.status(422).render('cocho/list', {
+        titulo: 'Cochos',
+        cochos,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      divisao: { id: dados.divisaoId },
+      ativo: dados.ativo === '1',
+    };
   }
 }

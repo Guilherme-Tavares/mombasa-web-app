@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { ProdutorService } from './produtor.service';
 
 @Controller('produtores')
@@ -19,9 +21,17 @@ export class ProdutorController {
   }
 
   @Post('criar')
-  @Redirect('/produtores')
-  async store(@Body() dados: any): Promise<void> {
-    await this.produtorService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.produtorService.create(dados);
+      res.redirect('/produtores');
+    } catch (e) {
+      res.status(422).render('produtor/form', {
+        titulo: 'Novo Produtor',
+        produtor: dados,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -32,9 +42,21 @@ export class ProdutorController {
   }
 
   @Post(':id/editar')
-  @Redirect('/produtores')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.produtorService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.produtorService.update(id, dados);
+      res.redirect('/produtores');
+    } catch (e) {
+      res.status(422).render('produtor/form', {
+        titulo: 'Editar Produtor',
+        produtor: { ...dados, id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -45,8 +67,17 @@ export class ProdutorController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/produtores')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.produtorService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.produtorService.remove(id);
+      res.redirect('/produtores');
+    } catch (e) {
+      const produtores = await this.produtorService.findAll();
+      res.status(422).render('produtor/list', {
+        titulo: 'Produtores',
+        produtores,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 }

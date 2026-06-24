@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { DivisaoService } from './divisao.service';
 
 @Controller('divisoes')
@@ -20,9 +22,19 @@ export class DivisaoController {
   }
 
   @Post('criar')
-  @Redirect('/divisoes')
-  async store(@Body() dados: any): Promise<void> {
-    await this.divisaoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.divisaoService.create(dados);
+      res.redirect('/divisoes');
+    } catch (e) {
+      const propriedades = await this.divisaoService.findAllPropriedades();
+      res.status(422).render('divisao/form', {
+        titulo: 'Nova Divisão',
+        propriedades,
+        divisao: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -36,9 +48,23 @@ export class DivisaoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/divisoes')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.divisaoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.divisaoService.update(id, dados);
+      res.redirect('/divisoes');
+    } catch (e) {
+      const propriedades = await this.divisaoService.findAllPropriedades();
+      res.status(422).render('divisao/form', {
+        titulo: 'Editar Divisão',
+        propriedades,
+        divisao: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -49,8 +75,25 @@ export class DivisaoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/divisoes')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.divisaoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.divisaoService.remove(id);
+      res.redirect('/divisoes');
+    } catch (e) {
+      const divisoes = await this.divisaoService.findAll();
+      res.status(422).render('divisao/list', {
+        titulo: 'Divisões',
+        divisoes,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      propriedade: { id: dados.propriedadeId },
+      ativa: dados.ativa === '1',
+    };
   }
 }

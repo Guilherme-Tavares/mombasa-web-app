@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { MedicamentoService } from './medicamento.service';
 
 @Controller('medicamentos')
@@ -19,9 +21,17 @@ export class MedicamentoController {
   }
 
   @Post('criar')
-  @Redirect('/medicamentos')
-  async store(@Body() dados: any): Promise<void> {
-    await this.medicamentoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.medicamentoService.create(dados);
+      res.redirect('/medicamentos');
+    } catch (e) {
+      res.status(422).render('medicamento/form', {
+        titulo: 'Novo Medicamento',
+        medicamento: dados,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -32,9 +42,21 @@ export class MedicamentoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/medicamentos')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.medicamentoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.medicamentoService.update(id, dados);
+      res.redirect('/medicamentos');
+    } catch (e) {
+      res.status(422).render('medicamento/form', {
+        titulo: 'Editar Medicamento',
+        medicamento: { ...dados, id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -45,8 +67,19 @@ export class MedicamentoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/medicamentos')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.medicamentoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.medicamentoService.remove(id);
+      res.redirect('/medicamentos');
+    } catch (e) {
+      // Falha ao excluir (ex.: medicamento referenciado em estoque/aplicação):
+      // volta à listagem com a mensagem.
+      const medicamentos = await this.medicamentoService.findAll();
+      res.status(422).render('medicamento/list', {
+        titulo: 'Medicamentos',
+        medicamentos,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 }

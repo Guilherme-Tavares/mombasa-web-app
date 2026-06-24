@@ -20,6 +20,8 @@
     <div class="col-lg-5">
         <div class="card">
             <div class="card-body">
+                <%- include('../layouts/partials/alert-erro') %>
+
                 <form action="/alimentos/<%= alimento.id ? alimento.id + '/editar' : 'criar' %>" method="POST">
 
                     <div class="form-group mb-3">

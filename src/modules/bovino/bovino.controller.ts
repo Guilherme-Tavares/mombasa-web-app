@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { BovinoService } from './bovino.service';
 
 @Controller('bovinos')
@@ -19,9 +21,17 @@ export class BovinoController {
   }
 
   @Post('criar')
-  @Redirect('/bovinos')
-  async store(@Body() dados: any): Promise<void> {
-    await this.bovinoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.bovinoService.create(dados);
+      res.redirect('/bovinos');
+    } catch (e) {
+      res.status(422).render('bovino/form', {
+        titulo: 'Novo Bovino',
+        bovino: { ...dados, ativo: dados.ativo === '1' },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -32,9 +42,21 @@ export class BovinoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/bovinos')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.bovinoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.bovinoService.update(id, dados);
+      res.redirect('/bovinos');
+    } catch (e) {
+      res.status(422).render('bovino/form', {
+        titulo: 'Editar Bovino',
+        bovino: { ...dados, ativo: dados.ativo === '1', id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -45,8 +67,17 @@ export class BovinoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/bovinos')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.bovinoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.bovinoService.remove(id);
+      res.redirect('/bovinos');
+    } catch (e) {
+      const bovinos = await this.bovinoService.findAll();
+      res.status(422).render('bovino/list', {
+        titulo: 'Bovinos',
+        bovinos,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 }

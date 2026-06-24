@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { EstoqueMedicamentoService } from './estoque-medicamento.service';
 
 @Controller('estoques')
@@ -24,9 +26,23 @@ export class EstoqueMedicamentoController {
   }
 
   @Post('criar')
-  @Redirect('/estoques')
-  async store(@Body() dados: any): Promise<void> {
-    await this.estoqueService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.estoqueService.create(dados);
+      res.redirect('/estoques');
+    } catch (e) {
+      const [propriedades, medicamentos] = await Promise.all([
+        this.estoqueService.findAllPropriedades(),
+        this.estoqueService.findAllMedicamentos(),
+      ]);
+      res.status(422).render('estoque/form', {
+        titulo: 'Nova Entrada de Estoque',
+        propriedades,
+        medicamentos,
+        estoque: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -41,9 +57,27 @@ export class EstoqueMedicamentoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/estoques')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.estoqueService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.estoqueService.update(id, dados);
+      res.redirect('/estoques');
+    } catch (e) {
+      const [propriedades, medicamentos] = await Promise.all([
+        this.estoqueService.findAllPropriedades(),
+        this.estoqueService.findAllMedicamentos(),
+      ]);
+      res.status(422).render('estoque/form', {
+        titulo: 'Editar Estoque',
+        propriedades,
+        medicamentos,
+        estoque: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -54,8 +88,25 @@ export class EstoqueMedicamentoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/estoques')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.estoqueService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.estoqueService.remove(id);
+      res.redirect('/estoques');
+    } catch (e) {
+      const estoques = await this.estoqueService.findAll();
+      res.status(422).render('estoque/list', {
+        titulo: 'Estoque de Medicamentos',
+        estoques,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      propriedade: { id: dados.propriedadeId },
+      medicamento: { id: dados.medicamentoId },
+    };
   }
 }

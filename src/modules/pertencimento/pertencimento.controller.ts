@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { PertencimentoService } from './pertencimento.service';
 
 @Controller('pertencimentos')
@@ -24,9 +26,23 @@ export class PertencimentoController {
   }
 
   @Post('criar')
-  @Redirect('/pertencimentos')
-  async criarPost(@Body() body: any) {
-    await this.pertencimentoService.create(body);
+  async criarPost(@Body() body: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.pertencimentoService.create(body);
+      res.redirect('/pertencimentos');
+    } catch (e) {
+      const [bovinos, rebanhos] = await Promise.all([
+        this.pertencimentoService.findAllBovinos(),
+        this.pertencimentoService.findAllRebanhos(),
+      ]);
+      res.status(422).render('pertencimento/form', {
+        titulo: 'Novo Pertencimento',
+        bovinos,
+        rebanhos,
+        pertencimento: this.formValues(body),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -41,9 +57,27 @@ export class PertencimentoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/pertencimentos')
-  async editarPost(@Param('id') id: string, @Body() body: any) {
-    await this.pertencimentoService.update(id, body);
+  async editarPost(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.pertencimentoService.update(id, body);
+      res.redirect('/pertencimentos');
+    } catch (e) {
+      const [bovinos, rebanhos] = await Promise.all([
+        this.pertencimentoService.findAllBovinos(),
+        this.pertencimentoService.findAllRebanhos(),
+      ]);
+      res.status(422).render('pertencimento/form', {
+        titulo: 'Editar Pertencimento',
+        bovinos,
+        rebanhos,
+        pertencimento: { ...this.formValues(body), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -54,8 +88,25 @@ export class PertencimentoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/pertencimentos')
-  async excluirPost(@Param('id') id: string) {
-    await this.pertencimentoService.remove(id);
+  async excluirPost(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.pertencimentoService.remove(id);
+      res.redirect('/pertencimentos');
+    } catch (e) {
+      const pertencimentos = await this.pertencimentoService.findAll();
+      res.status(422).render('pertencimento/list', {
+        titulo: 'Pertencimentos',
+        pertencimentos,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(body: any): object {
+    return {
+      ...body,
+      bovino: { id: body.bovinoId },
+      rebanho: { id: body.rebanhoId },
+    };
   }
 }

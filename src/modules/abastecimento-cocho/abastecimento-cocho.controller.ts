@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { AbastecimentoCochoService } from './abastecimento-cocho.service';
 
 @Controller('abastecimentos')
@@ -24,9 +26,23 @@ export class AbastecimentoCochoController {
   }
 
   @Post('criar')
-  @Redirect('/abastecimentos')
-  async criarPost(@Body() body: any) {
-    await this.abastecimentoService.create(body);
+  async criarPost(@Body() body: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.abastecimentoService.create(body);
+      res.redirect('/abastecimentos');
+    } catch (e) {
+      const [cochos, alimentos] = await Promise.all([
+        this.abastecimentoService.findAllCochos(),
+        this.abastecimentoService.findAllAlimentos(),
+      ]);
+      res.status(422).render('abastecimento/form', {
+        titulo: 'Novo Abastecimento',
+        cochos,
+        alimentos,
+        abastecimento: this.formValues(body),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -41,9 +57,27 @@ export class AbastecimentoCochoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/abastecimentos')
-  async editarPost(@Param('id') id: string, @Body() body: any) {
-    await this.abastecimentoService.update(id, body);
+  async editarPost(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.abastecimentoService.update(id, body);
+      res.redirect('/abastecimentos');
+    } catch (e) {
+      const [cochos, alimentos] = await Promise.all([
+        this.abastecimentoService.findAllCochos(),
+        this.abastecimentoService.findAllAlimentos(),
+      ]);
+      res.status(422).render('abastecimento/form', {
+        titulo: 'Editar Abastecimento',
+        cochos,
+        alimentos,
+        abastecimento: { ...this.formValues(body), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -54,8 +88,26 @@ export class AbastecimentoCochoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/abastecimentos')
-  async excluirPost(@Param('id') id: string) {
-    await this.abastecimentoService.remove(id);
+  async excluirPost(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.abastecimentoService.remove(id);
+      res.redirect('/abastecimentos');
+    } catch (e) {
+      const abastecimentos = await this.abastecimentoService.findAll();
+      res.status(422).render('abastecimento/list', {
+        titulo: 'Abastecimentos de Cocho',
+        abastecimentos,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(body: any): object {
+    return {
+      ...body,
+      cocho: { id: body.cochoId },
+      alimento: { id: body.alimentoId },
+      esgotado: body.esgotado === '1',
+    };
   }
 }

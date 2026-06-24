@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { AlimentoService } from './alimento.service';
 
 @Controller('alimentos')
@@ -19,9 +21,17 @@ export class AlimentoController {
   }
 
   @Post('criar')
-  @Redirect('/alimentos')
-  async store(@Body() dados: any): Promise<void> {
-    await this.alimentoService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.alimentoService.create(dados);
+      res.redirect('/alimentos');
+    } catch (e) {
+      res.status(422).render('alimento/form', {
+        titulo: 'Novo Alimento',
+        alimento: dados,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -32,9 +42,21 @@ export class AlimentoController {
   }
 
   @Post(':id/editar')
-  @Redirect('/alimentos')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.alimentoService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.alimentoService.update(id, dados);
+      res.redirect('/alimentos');
+    } catch (e) {
+      res.status(422).render('alimento/form', {
+        titulo: 'Editar Alimento',
+        alimento: { ...dados, id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -45,8 +67,17 @@ export class AlimentoController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/alimentos')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.alimentoService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.alimentoService.remove(id);
+      res.redirect('/alimentos');
+    } catch (e) {
+      const alimentos = await this.alimentoService.findAll();
+      res.status(422).render('alimento/list', {
+        titulo: 'Alimentos',
+        alimentos,
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 }

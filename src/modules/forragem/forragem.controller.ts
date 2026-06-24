@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { ForragemService } from './forragem.service';
 
 @Controller('forragens')
@@ -20,9 +22,19 @@ export class ForragemController {
   }
 
   @Post('criar')
-  @Redirect('/forragens')
-  async store(@Body() dados: any): Promise<void> {
-    await this.forragemService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.forragemService.create(dados);
+      res.redirect('/forragens');
+    } catch (e) {
+      const divisoes = await this.forragemService.findAllDivisoes();
+      res.status(422).render('forragem/form', {
+        titulo: 'Nova Forragem',
+        divisoes,
+        forragem: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -36,9 +48,23 @@ export class ForragemController {
   }
 
   @Post(':id/editar')
-  @Redirect('/forragens')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.forragemService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.forragemService.update(id, dados);
+      res.redirect('/forragens');
+    } catch (e) {
+      const divisoes = await this.forragemService.findAllDivisoes();
+      res.status(422).render('forragem/form', {
+        titulo: 'Editar Forragem',
+        divisoes,
+        forragem: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -49,8 +75,25 @@ export class ForragemController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/forragens')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.forragemService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.forragemService.remove(id);
+      res.redirect('/forragens');
+    } catch (e) {
+      const forragens = await this.forragemService.findAll();
+      res.status(422).render('forragem/list', {
+        titulo: 'Forragens',
+        forragens,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      divisao: { id: dados.divisaoId },
+      ativa: dados.ativa === '1',
+    };
   }
 }

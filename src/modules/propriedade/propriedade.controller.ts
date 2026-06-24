@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { PropriedadeService } from './propriedade.service';
 
 @Controller('propriedades')
@@ -20,9 +22,19 @@ export class PropriedadeController {
   }
 
   @Post('criar')
-  @Redirect('/propriedades')
-  async store(@Body() dados: any): Promise<void> {
-    await this.propriedadeService.create(dados);
+  async store(@Body() dados: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.propriedadeService.create(dados);
+      res.redirect('/propriedades');
+    } catch (e) {
+      const produtores = await this.propriedadeService.findAllProdutores();
+      res.status(422).render('propriedade/form', {
+        titulo: 'Nova Propriedade',
+        produtores,
+        propriedade: this.formValues(dados),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -36,9 +48,23 @@ export class PropriedadeController {
   }
 
   @Post(':id/editar')
-  @Redirect('/propriedades')
-  async update(@Param('id') id: string, @Body() dados: any): Promise<void> {
-    await this.propriedadeService.update(id, dados);
+  async update(
+    @Param('id') id: string,
+    @Body() dados: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.propriedadeService.update(id, dados);
+      res.redirect('/propriedades');
+    } catch (e) {
+      const produtores = await this.propriedadeService.findAllProdutores();
+      res.status(422).render('propriedade/form', {
+        titulo: 'Editar Propriedade',
+        produtores,
+        propriedade: { ...this.formValues(dados), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -49,8 +75,26 @@ export class PropriedadeController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/propriedades')
-  async destroy(@Param('id') id: string): Promise<void> {
-    await this.propriedadeService.remove(id);
+  async destroy(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.propriedadeService.remove(id);
+      res.redirect('/propriedades');
+    } catch (e) {
+      const propriedades = await this.propriedadeService.findAll();
+      res.status(422).render('propriedade/list', {
+        titulo: 'Propriedades',
+        propriedades,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  // Reconstrói o objeto no formato esperado pela view (FK aninhada + booleano).
+  private formValues(dados: any): object {
+    return {
+      ...dados,
+      produtor: { id: dados.produtorId },
+      ativa: dados.ativa === '1',
+    };
   }
 }

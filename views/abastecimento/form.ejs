@@ -29,6 +29,8 @@
     <div class="col-lg-7">
         <div class="card">
             <div class="card-body">
+                <%- include('../layouts/partials/alert-erro') %>
+
                 <form action="/abastecimentos/<%= abastecimento.id ? abastecimento.id + '/editar' : 'criar' %>" method="POST">
 
                     <div class="form-group mb-3">

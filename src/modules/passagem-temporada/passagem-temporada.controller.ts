@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post, Redirect, Render } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Render, Res } from '@nestjs/common';
+import type { Response } from 'express';
+import { mensagemDeErro } from '../../shared/persistence-error';
 import { PassagemTemporadaService } from './passagem-temporada.service';
 
 @Controller('passagens')
@@ -23,9 +25,23 @@ export class PassagemTemporadaController {
   }
 
   @Post('criar')
-  @Redirect('/passagens')
-  async criarPost(@Body() body: any) {
-    await this.passagemService.create(body);
+  async criarPost(@Body() body: any, @Res() res: Response): Promise<void> {
+    try {
+      await this.passagemService.create(body);
+      res.redirect('/passagens');
+    } catch (e) {
+      const [rebanhos, temporadas] = await Promise.all([
+        this.passagemService.findAllRebanhos(),
+        this.passagemService.findAllTemporadas(),
+      ]);
+      res.status(422).render('passagem/form', {
+        titulo: 'Nova Passagem de Temporada',
+        rebanhos,
+        temporadas,
+        passagem: this.formValues(body),
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/editar')
@@ -40,9 +56,27 @@ export class PassagemTemporadaController {
   }
 
   @Post(':id/editar')
-  @Redirect('/passagens')
-  async editarPost(@Param('id') id: string, @Body() body: any) {
-    await this.passagemService.update(id, body);
+  async editarPost(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.passagemService.update(id, body);
+      res.redirect('/passagens');
+    } catch (e) {
+      const [rebanhos, temporadas] = await Promise.all([
+        this.passagemService.findAllRebanhos(),
+        this.passagemService.findAllTemporadas(),
+      ]);
+      res.status(422).render('passagem/form', {
+        titulo: 'Editar Passagem de Temporada',
+        rebanhos,
+        temporadas,
+        passagem: { ...this.formValues(body), id },
+        erro: mensagemDeErro(e),
+      });
+    }
   }
 
   @Get(':id/excluir')
@@ -53,8 +87,25 @@ export class PassagemTemporadaController {
   }
 
   @Post(':id/excluir')
-  @Redirect('/passagens')
-  async excluirPost(@Param('id') id: string) {
-    await this.passagemService.remove(id);
+  async excluirPost(@Param('id') id: string, @Res() res: Response): Promise<void> {
+    try {
+      await this.passagemService.remove(id);
+      res.redirect('/passagens');
+    } catch (e) {
+      const passagens = await this.passagemService.findAll();
+      res.status(422).render('passagem/list', {
+        titulo: 'Passagens de Temporada',
+        passagens,
+        erro: mensagemDeErro(e),
+      });
+    }
+  }
+
+  private formValues(body: any): object {
+    return {
+      ...body,
+      rebanho: { id: body.rebanhoId },
+      temporada: { id: body.temporadaId },
+    };
   }
 }
