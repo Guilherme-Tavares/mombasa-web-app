@@ -165,3 +165,8 @@ body {
   font-size: 1.15rem;
   vertical-align: middle;
 }
+
+/* Título da barra de páginas (listagens/formulários) — verde da marca */
+.page-titles h4 {
+  color: var(--ag-verde-escuro);
+}
