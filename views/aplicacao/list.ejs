@@ -19,7 +19,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Aplicações</h5>
                 <a href="/aplicacoes/criar" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus mr-1"></i> Nova Aplicação
+                    <i class="mdi mdi-plus mr-1"></i> Nova Aplicação
                 </a>
             </div>
             <div class="card-body">
@@ -52,10 +52,10 @@
                                     <td><%= aplicacoes[i].dataAplicacao ? new Date(aplicacoes[i].dataAplicacao).toLocaleString('pt-BR') : '—' %></td>
                                     <td>
                                         <a href="/aplicacoes/<%= aplicacoes[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/aplicacoes/<%= aplicacoes[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

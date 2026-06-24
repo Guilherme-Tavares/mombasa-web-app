@@ -19,7 +19,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Lotações</h5>
                 <a href="/lotacoes/criar" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus mr-1"></i> Nova Lotação
+                    <i class="mdi mdi-plus mr-1"></i> Nova Lotação
                 </a>
             </div>
             <div class="card-body">
@@ -56,10 +56,10 @@
                                     <td><%= lotacoes[i].dataSaida ? lotacoes[i].dataSaida.split('-').reverse().join('/') : '—' %></td>
                                     <td>
                                         <a href="/lotacoes/<%= lotacoes[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/lotacoes/<%= lotacoes[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

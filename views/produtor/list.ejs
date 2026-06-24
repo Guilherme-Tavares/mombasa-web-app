@@ -19,7 +19,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Produtores</h5>
                 <a href="/produtores/criar" class="btn btn-primary btn-sm">
-                    <i class="icon icon-single-04 mr-1"></i> Novo Produtor
+                    <i class="mdi mdi-plus mr-1"></i> Novo Produtor
                 </a>
             </div>
             <div class="card-body">
@@ -52,10 +52,10 @@
                                     <td><%= dateFormat(produtores[i].dataCadastro, {}, 'pt-BR', true) %></td>
                                     <td>
                                         <a href="/produtores/<%= produtores[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/produtores/<%= produtores[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

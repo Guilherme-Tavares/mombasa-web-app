@@ -19,7 +19,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Abastecimentos</h5>
                 <a href="/abastecimentos/criar" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus mr-1"></i> Novo Abastecimento
+                    <i class="mdi mdi-plus mr-1"></i> Novo Abastecimento
                 </a>
             </div>
             <div class="card-body">
@@ -67,10 +67,10 @@
                                     <td><%= abastecimentos[i].dataAbastecimento ? new Date(abastecimentos[i].dataAbastecimento).toLocaleString('pt-BR') : '—' %></td>
                                     <td>
                                         <a href="/abastecimentos/<%= abastecimentos[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/abastecimentos/<%= abastecimentos[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

@@ -21,7 +21,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Estoque de Medicamentos</h5>
                 <a href="/estoques/criar" class="btn btn-primary btn-sm">
-                    <i class="icon icon-pulse-chart mr-1"></i> Nova Entrada
+                    <i class="mdi mdi-plus mr-1"></i> Nova Entrada
                 </a>
             </div>
             <div class="card-body">
@@ -62,10 +62,10 @@
                                     <td><%= estoques[i].dataEntrada ? estoques[i].dataEntrada.split('-').reverse().join('/') : '—' %></td>
                                     <td>
                                         <a href="/estoques/<%= estoques[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/estoques/<%= estoques[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

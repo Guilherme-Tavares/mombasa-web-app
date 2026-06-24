@@ -21,7 +21,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Alimentos</h5>
                 <a href="/alimentos/criar" class="btn btn-primary btn-sm">
-                    <i class="icon icon-basket mr-1"></i> Novo Alimento
+                    <i class="mdi mdi-plus mr-1"></i> Novo Alimento
                 </a>
             </div>
             <div class="card-body">
@@ -50,10 +50,10 @@
                                     <td><%= tipoLabels[alimentos[i].tipo] || alimentos[i].tipo %></td>
                                     <td>
                                         <a href="/alimentos/<%= alimentos[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/alimentos/<%= alimentos[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

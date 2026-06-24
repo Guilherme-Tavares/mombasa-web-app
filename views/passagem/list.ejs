@@ -21,7 +21,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Passagens de Temporada</h5>
                 <a href="/passagens/criar" class="btn btn-primary btn-sm">
-                    <i class="fa fa-plus mr-1"></i> Nova Passagem
+                    <i class="mdi mdi-plus mr-1"></i> Nova Passagem
                 </a>
             </div>
             <div class="card-body">
@@ -58,10 +58,10 @@
                                     <td><%= passagens[i].gmdMedioKg != null ? parseFloat(passagens[i].gmdMedioKg).toFixed(3) : '—' %></td>
                                     <td>
                                         <a href="/passagens/<%= passagens[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/passagens/<%= passagens[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>

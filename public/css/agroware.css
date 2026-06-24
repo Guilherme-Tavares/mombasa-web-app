@@ -159,3 +159,9 @@ body {
 .nav-header .brand-title {
   max-width: 100px;
 }
+
+/* Ícones de ação (editar/excluir) nas tabelas das listagens */
+.table .mdi {
+  font-size: 1.15rem;
+  vertical-align: middle;
+}

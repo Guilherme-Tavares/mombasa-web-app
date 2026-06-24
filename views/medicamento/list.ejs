@@ -21,7 +21,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0" style="text-transform: none">Lista de Medicamentos</h5>
                 <a href="/medicamentos/criar" class="btn btn-primary btn-sm">
-                    <i class="icon icon-pulse-chart mr-1"></i> Novo Medicamento
+                    <i class="mdi mdi-plus mr-1"></i> Novo Medicamento
                 </a>
             </div>
             <div class="card-body">
@@ -53,10 +53,10 @@
                                     <td><%= tipoLabels[medicamentos[i].tipo] || medicamentos[i].tipo %></td>
                                     <td>
                                         <a href="/medicamentos/<%= medicamentos[i].id %>/editar" class="text-warning mr-2">
-                                            <i class="fa fa-pencil fa-lg"></i>
+                                            <i class="mdi mdi-pencil"></i>
                                         </a>
                                         <a href="/medicamentos/<%= medicamentos[i].id %>/excluir" class="text-danger">
-                                            <i class="fa fa-trash fa-lg"></i>
+                                            <i class="mdi mdi-delete"></i>
                                         </a>
                                     </td>
                                 </tr>
