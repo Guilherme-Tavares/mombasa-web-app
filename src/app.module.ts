@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './config/database/database.module';
 import { AbastecimentoCochoModule } from './modules/abastecimento-cocho/abastecimento-cocho.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { AlimentoModule } from './modules/alimento/alimento.module';
 import { AplicacaoMedicamentoModule } from './modules/aplicacao-medicamento/aplicacao-medicamento.module';
 import { BovinoModule } from './modules/bovino/bovino.module';
@@ -24,6 +25,7 @@ import { TemporadaModule } from './modules/temporada/temporada.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
+    AuthModule,
     ProdutorModule,
     TemporadaModule,
     MedicamentoModule,

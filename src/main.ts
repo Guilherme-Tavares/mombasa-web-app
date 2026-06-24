@@ -3,6 +3,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'node:path';
 import { Logger } from '@nestjs/common';
 import expressEjsLayouts from 'express-ejs-layouts';
+import session from 'express-session';
+import { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 import { registerHelpers } from './helpers';
 
@@ -15,6 +17,26 @@ async function bootstrap() {
 
   app.use(expressEjsLayouts);
   app.set('layout', 'layouts/main');
+
+  // Sessão por cookie (autenticação server-side).
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET ?? 'mombasa-dev-secret-trocar-em-producao',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 8, // 8 horas
+      },
+    }),
+  );
+
+  // Expõe o usuário logado para todas as views (header, etc.).
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.locals.usuario = req.session.user ?? null;
+    next();
+  });
 
   registerHelpers(app.getHttpAdapter().getInstance());
 

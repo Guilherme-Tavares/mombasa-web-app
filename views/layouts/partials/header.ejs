@@ -19,12 +19,21 @@
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                             <i class="mdi mdi-account"></i>
+                            <% if (locals.usuario) { %>
+                                <span class="ml-2 d-none d-sm-inline"><%= usuario.nome %></span>
+                            <% } %>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="/login" class="dropdown-item">
-                                <i class="icon-key"></i>
-                                <span class="ml-2">Sair</span>
-                            </a>
+                            <% if (locals.usuario) { %>
+                                <span class="dropdown-item-text small text-muted"><%= usuario.email %></span>
+                                <div class="dropdown-divider"></div>
+                            <% } %>
+                            <form id="logout-form" action="/logout" method="POST" class="m-0">
+                                <button type="button" class="dropdown-item" onclick="confirmarLogout()">
+                                    <i class="mdi mdi-logout"></i>
+                                    <span class="ml-2">Sair</span>
+                                </button>
+                            </form>
                         </div>
                     </li>
                 </ul>
@@ -32,3 +41,25 @@
         </nav>
     </div>
 </div>
+
+<script>
+    // Confirmação de logout via SweetAlert2 (carregado no layout mestre).
+    function confirmarLogout() {
+        Swal.fire({
+            title: 'Deseja sair?',
+            text: 'Você precisará entrar novamente para acessar o sistema.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sair',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#4A7C3F',
+            cancelButtonColor: '#7A6F67',
+            reverseButtons: true,
+            focusCancel: true
+        }).then(function (resultado) {
+            if (resultado.isConfirmed) {
+                document.getElementById('logout-form').submit();
+            }
+        });
+    }
+</script>
