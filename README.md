@@ -17,6 +17,7 @@ Guilherme Tavares
 - **NestJS 11** com Express
 - **EJS 5** com express-ejs-layouts
 - **TypeORM 0.3** com MySQL 8.0
+- **express-session** para autenticação por sessão (todas as rotas exigem login)
 - **@nestjs/config** para variáveis de ambiente via `.env`
 
 ## Pré-requisitos
@@ -30,7 +31,7 @@ Guilherme Tavares
 npm install
 ```
 
-Copie `.env.example` para `.env` e preencha com suas credenciais:
+Copie `.env.example` para `.env` e preencha com as credenciais do MySQL e um `SESSION_SECRET`:
 
 ```bash
 cp .env.example .env
@@ -573,6 +574,8 @@ SET SQL_SAFE_UPDATES = 1;
 
 ## Executar
 
+Garanta que os scripts **DDL e DML** já foram aplicados (ver acima) — o login depende do usuário criado pelo DML.
+
 ```bash
 # modo desenvolvimento (watch)
 npm run start:dev
@@ -583,13 +586,21 @@ npm run start:prod
 
 A aplicação sobe em `http://localhost:3000` por padrão.
 
+## Acesso
+
+Todas as rotas exigem autenticação: ao abrir, você é redirecionado para `/login`. Use as credenciais do seed (DML):
+
+- **E-mail:** `admin@mombasa.com`
+- **Senha:** `admin.mombasa2026`
+
 ## Estrutura
 
 ```
 src/
 ├── config/database/   # DatabaseModule (TypeORM DataSource)
 ├── helpers/           # Helpers EJS (dateFormat, currencyFormat)
-└── modules/           # Módulos de domínio
+├── shared/            # ValidationException + tradução de erros do banco
+└── modules/           # Módulos de domínio (inclui auth: login/logout + guard)
 
 views/
 ├── layouts/           # Layout mestre e partials
